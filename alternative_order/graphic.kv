@@ -1,0 +1,197 @@
+<MainWindow>:
+    test_property: box_to_add
+    BoxLayout:
+        canvas.before:
+            Color:
+                rgba: 1,1,1, .80
+            Rectangle:
+                pos: root.pos
+                size: root.size
+        orientation: 'vertical'
+        color: (1,1,1,0)
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'vertical'
+            BoxLayout:
+                canvas.before:
+                    Color:
+                        rgba: 0,0,0, 0.75
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                orientation: 'horizontal'
+                size_hint: 1, .18
+                Label:
+                    text: 'TEST'
+                    markup: 'True'
+                    font_size: self.parent.width/20
+                Label:
+                    size_hint: 0.3 , 1
+                Image:
+                    source: 'logo.png'
+                    size_hint: 0.5 , 1
+                Label:
+                    size_hint: .1, 1
+            BoxLayout:
+                orientation: 'vertical'
+                Label:
+                    size_hint: 1, .03
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint: 1, .6
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint: .5,1
+                        BoxLayout:
+                            size_hint: 1, .1
+                            orientation: 'horizontal'
+                            Label:
+                                size_hint: .1, 1
+                            Label:
+                                id: label_client
+                                text: '[b]CLIENT NAME[b]'
+                                color: 0,0,0,1
+                                size_hint: 2.2,1
+                                markup: 'True'
+                                font_size: self.parent.width/30
+                            Label:
+                                size_hint: .2, 1
+                            Label:
+                                id: label_country
+                                text: '[b]COUNTRY[b]'
+                                color: 0,0,0,1
+                                markup: 'True'
+                                font_size: self.parent.width/30
+                            Label:
+                                size_hint: .1, 1
+                        BoxLayout:
+                            size_hint: 1, .1
+                            orientation: 'horizontal'
+                            Label:
+                                size_hint: .1, 1
+                            TextInput:
+                                id: client_name
+                                size_hint: 2.2,1
+                                on_text:
+                                padding_x: self.width/2
+                                padding_y: self.height/4
+                            Label:
+                                size_hint: .2, 1
+                            TextInput:
+                                id: country
+                                on_text:
+                                padding_x: self.width/2
+                                padding_y: self.height/4
+                            Label:
+                                size_hint: .1, 1
+                        BoxLayout:
+                            size_hint: 1, .1
+                            orientation: 'horizontal'
+                            Label:
+                                size_hint: .1, 1
+                            Label:
+                                id: label_adress
+                                text: '[b]ADRESS[b]'
+                                size_hint: 1.5,1
+                                color: 0,0,0,1
+                                markup: 'True'
+                                font_size: self.parent.width/30
+                            Label:
+                                size_hint: .2, 1
+                            Label:
+                                id: label_post_code
+                                text: '[b]POST-CODE[b]'
+                                size_hint: .5,1
+                                color: 0,0,0,1
+                                markup: 'True'
+                                font_size: self.parent.width/30
+                            Label:
+                                size_hint: .2, 1
+                            Label:
+                                id: label_invoice
+                                text: '[b]INVOICE[b]'
+                                color: 0,0,0,1
+                                markup: 'True'
+                                font_size: self.parent.width/30
+                            Label:
+                                size_hint: .1, 1
+                        BoxLayout:
+                            size_hint: 1, .1
+                            orientation: 'horizontal'
+                            Label:
+                                size_hint: .1, 1
+                            TextInput:
+                                id: adress
+                                size_hint: 1.5,1
+                                on_text:
+                                padding_x: self.width/2
+                                padding_y: self.height/4
+                            Label:
+                                size_hint: .2, 1
+                            TextInput:
+                                id: post_code
+                                size_hint: .5,1
+                                on_text:
+                                padding_x: self.width/2
+                                padding_y: self.height/4
+                            Label:
+                                size_hint: .2, 1
+                            TextInput:
+                                id: invoice
+                                on_text:
+                                padding_x: self.width/2
+                                padding_y: self.height/4
+                            Label:
+                                size_hint: .1, 1
+                    Label:
+                        id: status
+                        text: '[b]CONNECT[b]'
+                        size_hint: .2, 1
+                        color: 0,0,1,.6
+                        markup: 'True'
+                        font_size: self.parent.width/20
+                Label:
+                    size_hint: 1, .05
+                BoxLayout:
+                    orientation: 'horizontal'
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint: 2.5, 1
+
+                    Label:
+                        size_hint: .25, 1
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint: .7, 1
+                        Button:
+                            text: 'SEND'
+                            background_color: 0, .6156, .48235, 1
+                            background_normal: ''
+                            on_press: root.add()
+                            on_release:
+                        Label:
+                            size_hint: 1,.1
+                        Button:
+                            text: 'CANCEL'
+                            background_color: 0, .6156, .48235, 1
+                            background_normal: ''
+                            on_press: root.remove()
+                        Label:
+                            size_hint: 1,.1
+                        Button:
+                            id: button_read
+                            text: 'READ'
+                            background_color: 0, .6156, .48235, 1
+                            background_normal: ''
+                            on_press:
+                        Label:
+                            size_hint: 1,.1
+                        Button:
+                            text: 'EXIT'
+                            background_color: 0, .6156, .48235, 1
+                            background_normal: ''
+                            on_press:
+                    Label:
+                        size_hint: .175, 1
+                Label:
+                    size_hint: 1,.05
