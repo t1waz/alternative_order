@@ -9,7 +9,8 @@ import threading
 from kivy.properties import (
     StringProperty,
     ObjectProperty,
-    NumericProperty
+    NumericProperty,
+    ListProperty
 )
 
 
@@ -33,7 +34,6 @@ class ScannerThread(threading.Thread):
 
 class MessageWindow(Popup):
     message_box = ObjectProperty()
-
     def __init__(self, **kwargs):
         super(MessageWindow, self).__init__(**kwargs)
 
@@ -45,12 +45,13 @@ class MainWindow(Screen):
     status_label = StringProperty('connected')
     worker_label = StringProperty('-')
     comment_box = StringProperty()
-    order_status_label = StringProperty('NO ORDER')
+    order_detail_label = StringProperty('NO ORDER')
     order_number_texbox = ObjectProperty()
     order_id = NumericProperty()
     for index in range(1, 11):
         variable_name = 'barcode_label_{}'.format(index)
         exec(variable_name + '  = StringProperty()')
+    message_labels = ListProperty()
 
     def __init__(self, **kwargs):
         super(MainWindow, self).__init__(**kwargs)
@@ -60,13 +61,11 @@ class MainWindow(Screen):
 
     def show_info(self, *args):
         message_window = MessageWindow()
-        order_id = self.order_number_texbox.text or 0
-        order = AppService().return_order(order_id)
-        for order_pos in order.get('boards', []):
-
-            print(order_pos)
-
-        MessageWindow().open()
+        message_window.message_box.add_widget(Label())
+        for each in self.message_labels:
+            message_window.message_box.add_widget(Label(text=each))
+        message_window.message_box.add_widget(Label())
+        message_window.open()
 
     def load_order(self, *args):
         try:

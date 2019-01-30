@@ -5,6 +5,7 @@ from datetime import datetime
 import json
 
 
+
 class AppService:
     def __init__(self):
         self.current_worker = ''
@@ -12,6 +13,7 @@ class AppService:
         self.workers = {}
         self.station_name = ''
         self.current_order_boards = {}
+        self.readed_order = {}
         self.current_order = 0
 
     def get_endpoint_data(self, _endpoint_string):
@@ -21,9 +23,11 @@ class AppService:
                                              'Content-Type': 'application/json'})
         except requests.ConnectionError:
             # TU ZROBIC JAKIS HANDLING JESLI NIE DZIALA SERWER ELO
-            return '0'
-
-        return response.json()
+            return {}
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return {}
 
     def send_endpoint_data(self, _endpoint, _data_dict):
         response = requests.post(url='http://{}/{}/'.format(settings.BACKEND_URL, _endpoint),
@@ -38,8 +42,7 @@ class AppService:
     def get_label_value(self, _label):
         app = App.get_running_app()
         if hasattr(app.root, _label):
-            exec("value = app.root.{}".format(_label))
-            return value
+            return eval("app.root.{}".format(_label))
         else:
             return ''
 
@@ -51,6 +54,19 @@ class AppService:
             else:
                 command = "app.root.{} = '{}'".format(_label, _data)
             exec(command)
+
+    def update_list_property(self,_label, _data):
+        app = App.get_running_app()
+        if hasattr(app.root, _label):
+            if type(_data) is int:
+                exec("app.root.{}.append(str({}))".format(_label, _data))
+            else:
+                exec("app.root.{}.append('{}')".format(_label, _data))
+
+    def clear_list_property(self, _label):
+        app = App.get_running_app()
+        if hasattr(app.root, _label):
+            exec("app.root.{} = []".format(_label))
 
     def get_workers(self):
         workers_raw_data = self.get_endpoint_data('workers')
@@ -108,18 +124,32 @@ class AppService:
         self.update_label('status_label', message)
         self.update_label('comment_box', '')
 
-    def return_order(self, _id):
-        return self.get_endpoint_data('orders/{}'.format(_id))
-
     def check_new_order_available(self):
         order_number = self.get_label_value('order_id')
-        print('aaa')
-        if current_order_number != self.current_order:
+        if order_number != self.current_order:
             self.current_order = order_number
             self.load_order(order_number)
 
     def load_order(self, _id):
-        print(_id)
+        order = self.get_endpoint_data("orders/{}".format(_id))
+        boards = order.get('boards', False)
+        if boards:
+            self.current_order_boards = boards
+            self.readed_order = boards
+            self.update_label('status_label', 'ORDER LOADED')
+            self.update_label('order_detail_label', order['client'])
+            self.create_message_list()
+
+    def create_message_list(self):
+        self.clear_list_property('message_labels')
+        index = 0
+        for board, qty in self.readed_order.items():
+            free_space = ' '*(20 - len(board))
+            label_value = '{}:{}{}       {}    <--- LEFT'.format(board,free_space, 
+                                                            qty,
+                                                            self.current_order_boards[board])
+            self.update_list_property('message_labels',label_value)
+            index = index + 1
 
     def main_handling(self, _barcode):
         if self.get_label_value('main_app_name_label') is '':
@@ -129,6 +159,7 @@ class AppService:
             if not self.update_worker(_barcode):
                 if not self.current_worker == "":
                     self.add_barcode(_barcode)
+                    self.create_message_list()
                 else:
                     self.update_label('status_label', 'SCAN WORKER CARD')
             self.update_barcode_list(_barcode)
