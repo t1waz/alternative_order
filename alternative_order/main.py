@@ -1,4 +1,5 @@
 from kivy.app import App
+from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 from kivy.lang import Builder
@@ -6,11 +7,10 @@ from scanner import BarcodeScanner
 from service import AppService
 import threading
 from kivy.properties import (
-    StringProperty, 
-    BooleanProperty,
-    ObjectProperty
+    StringProperty,
+    ObjectProperty,
+    NumericProperty
 )
-from kivy.uix.label import Label
 
 
 Builder.load_file('graphic.kv')
@@ -28,6 +28,7 @@ class ScannerThread(threading.Thread):
         while True:
             current_barcode_scan = self.barcode_scanner.ask_data()
             self.app_service.main_handling(current_barcode_scan)
+            self.app_service.check_new_order_available()
 
 
 class MessageWindow(Popup):
@@ -46,8 +47,7 @@ class MainWindow(Screen):
     comment_box = StringProperty()
     order_status_label = StringProperty('NO ORDER')
     order_number_texbox = ObjectProperty()
-    worker = ''
-    second_category_flag = BooleanProperty(False)
+    order_id = NumericProperty()
     for index in range(1, 11):
         variable_name = 'barcode_label_{}'.format(index)
         exec(variable_name + '  = StringProperty()')
@@ -59,12 +59,29 @@ class MainWindow(Screen):
         App.get_running_app().stop()
 
     def show_info(self, *args):
+        message_window = MessageWindow()
         order_id = self.order_number_texbox.text or 0
         order = AppService().return_order(order_id)
         for order_pos in order.get('boards', []):
-            
+
+            print(order_pos)
 
         MessageWindow().open()
+
+    def load_order(self, *args):
+        try:
+            self.order_id = int(self.order_number_texbox.text)
+        except ValueError:
+            self.order_id = 0
+
+    def update_padding(self, text_input, *args):
+        text_width = text_input._get_text_width(
+            text_input.text,
+            text_input.tab_width,
+            text_input._label_cached
+        )
+
+        text_input.padding_x = (text_input.width - text_width) / 2
 
 
 class ScanApp(App):

@@ -11,11 +11,12 @@ class AppService:
         self.current_comment = ''
         self.workers = {}
         self.station_name = ''
-        self.current_order = {}
+        self.current_order_boards = {}
+        self.current_order = 0
 
     def get_endpoint_data(self, _endpoint_string):
         try:
-            response = requests.get(url='http://127.0.0.1:8000/{}/'.format(_endpoint_string),
+            response = requests.get(url='http://{}/{}/'.format(settings.BACKEND_URL, _endpoint_string),
                                     headers={'Access-Token': settings.BACKEND_ACCESS_TOKEN,
                                              'Content-Type': 'application/json'})
         except requests.ConnectionError:
@@ -25,7 +26,7 @@ class AppService:
         return response.json()
 
     def send_endpoint_data(self, _endpoint, _data_dict):
-        response = requests.post(url='http://127.0.0.1:8000/{}/'.format(_endpoint),
+        response = requests.post(url='http://{}/{}/'.format(settings.BACKEND_URL, _endpoint),
                                  data=json.dumps(_data_dict),
                                  headers={'Access-Token': settings.BACKEND_ACCESS_TOKEN,
                                           'Content-Type': 'application/json'})
@@ -53,8 +54,6 @@ class AppService:
 
     def get_workers(self):
         workers_raw_data = self.get_endpoint_data('workers')
-        self.station_name = self.get_endpoint_data('stations/{}'.
-            format(settings.STATION_NUMBER))['name']
 
         self.workers = {worker['barcode']: worker['username'] for 
                         worker in workers_raw_data}
@@ -112,6 +111,16 @@ class AppService:
     def return_order(self, _id):
         return self.get_endpoint_data('orders/{}'.format(_id))
 
+    def check_new_order_available(self):
+        order_number = self.get_label_value('order_id')
+        print('aaa')
+        if current_order_number != self.current_order:
+            self.current_order = order_number
+            self.load_order(order_number)
+
+    def load_order(self, _id):
+        print(_id)
+
     def main_handling(self, _barcode):
         if self.get_label_value('main_app_name_label') is '':
             self.update_label('main_app_name_label', '{} ROOM'.format(self.station_name))
@@ -120,9 +129,6 @@ class AppService:
             if not self.update_worker(_barcode):
                 if not self.current_worker == "":
                     self.add_barcode(_barcode)
-                    if self.get_label_value('second_category_flag') is True:
-                        self.add_second_category(_barcode)
-                        self.update_label('second_category_flag', False)
                 else:
                     self.update_label('status_label', 'SCAN WORKER CARD')
             self.update_barcode_list(_barcode)
