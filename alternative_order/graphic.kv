@@ -1,5 +1,5 @@
 <MainWindow>:
-    test_property: box_to_add
+    order_number_texbox: order_number
     BoxLayout:
         canvas.before:
             Color:
@@ -22,7 +22,7 @@
                 orientation: 'horizontal'
                 size_hint: 1, .18
                 Label:
-                    text: 'TEST'
+                    text: '[b]{}[/b]'.format(root.main_app_name_label)
                     markup: 'True'
                     font_size: self.parent.width/20
                 Label:
@@ -33,165 +33,203 @@
                 Label:
                     size_hint: .1, 1
             BoxLayout:
-                orientation: 'vertical'
-                Label:
-                    size_hint: 1, .03
+                orientation: 'horizontal'
                 BoxLayout:
-                    orientation: 'horizontal'
-                    size_hint: 1, .6
-                    BoxLayout:
-                        orientation: 'vertical'
-                        size_hint: .5,1
-                        BoxLayout:
-                            size_hint: 1, .1
-                            orientation: 'horizontal'
-                            Label:
-                                size_hint: .1, 1
-                            Label:
-                                id: label_client
-                                text: '[b]CLIENT NAME[b]'
-                                color: 0,0,0,1
-                                size_hint: 2.2,1
-                                markup: 'True'
-                                font_size: self.parent.width/30
-                            Label:
-                                size_hint: .2, 1
-                            Label:
-                                id: label_country
-                                text: '[b]COUNTRY[b]'
-                                color: 0,0,0,1
-                                markup: 'True'
-                                font_size: self.parent.width/30
-                            Label:
-                                size_hint: .1, 1
-                        BoxLayout:
-                            size_hint: 1, .1
-                            orientation: 'horizontal'
-                            Label:
-                                size_hint: .1, 1
-                            TextInput:
-                                id: client_name
-                                size_hint: 2.2,1
-                                on_text:
-                                padding_x: self.width/2
-                                padding_y: self.height/4
-                            Label:
-                                size_hint: .2, 1
-                            TextInput:
-                                id: country
-                                on_text:
-                                padding_x: self.width/2
-                                padding_y: self.height/4
-                            Label:
-                                size_hint: .1, 1
-                        BoxLayout:
-                            size_hint: 1, .1
-                            orientation: 'horizontal'
-                            Label:
-                                size_hint: .1, 1
-                            Label:
-                                id: label_adress
-                                text: '[b]ADRESS[b]'
-                                size_hint: 1.5,1
-                                color: 0,0,0,1
-                                markup: 'True'
-                                font_size: self.parent.width/30
-                            Label:
-                                size_hint: .2, 1
-                            Label:
-                                id: label_post_code
-                                text: '[b]POST-CODE[b]'
-                                size_hint: .5,1
-                                color: 0,0,0,1
-                                markup: 'True'
-                                font_size: self.parent.width/30
-                            Label:
-                                size_hint: .2, 1
-                            Label:
-                                id: label_invoice
-                                text: '[b]INVOICE[b]'
-                                color: 0,0,0,1
-                                markup: 'True'
-                                font_size: self.parent.width/30
-                            Label:
-                                size_hint: .1, 1
-                        BoxLayout:
-                            size_hint: 1, .1
-                            orientation: 'horizontal'
-                            Label:
-                                size_hint: .1, 1
-                            TextInput:
-                                id: adress
-                                size_hint: 1.5,1
-                                on_text:
-                                padding_x: self.width/2
-                                padding_y: self.height/4
-                            Label:
-                                size_hint: .2, 1
-                            TextInput:
-                                id: post_code
-                                size_hint: .5,1
-                                on_text:
-                                padding_x: self.width/2
-                                padding_y: self.height/4
-                            Label:
-                                size_hint: .2, 1
-                            TextInput:
-                                id: invoice
-                                on_text:
-                                padding_x: self.width/2
-                                padding_y: self.height/4
-                            Label:
-                                size_hint: .1, 1
+                    orientation: 'vertical'
+                    size_hint: .9, 1
                     Label:
-                        id: status
-                        text: '[b]CONNECT[b]'
-                        size_hint: .2, 1
-                        color: 0,0,1,.6
+                        size_hint: 1, 0.4
+                    Label:
+                        text: '[b]SCANNED BARCODES[b]'
                         markup: 'True'
-                        font_size: self.parent.width/20
+                        size_hint: 1, 1.2
+                        font_size: self.parent.width/13
+                        color: 0, .6156, .48235
+                    Label:
+                        size_hint: 1, 0.2
+                    Label:
+                        text: root.barcode_label_1
+                        color: 0, 0, 0, 1
+                        font_size: self.parent.width/19
+                    Label:
+                        text: root.barcode_label_2
+                        color: 0, 0, 0, 0.95
+                        font_size: self.parent.width/19
+                    Label:
+                        text: root.barcode_label_3
+                        color: 0, 0, 0, 0.9
+                        font_size: self.parent.width/19
+                    Label:
+                        text: root.barcode_label_4
+                        color: 0, 0, 0, 0.85
+                        font_size: self.parent.width/19
+                    Label:
+                        text: root.barcode_label_5
+                        color: 0, 0, 0, 0.8
+                        font_size: self.parent.width/19
+                    Label:
+                        text: root.barcode_label_6
+                        color: 0, 0, 0, 0.75
+                        font_size: self.parent.width/19
+                    Label:
+                        text: root.barcode_label_7
+                        color: 0, 0, 0, 0.7
+                        font_size: self.parent.width/19
+                    Label:
+                        text: root.barcode_label_8
+                        color: 0, 0, 0, 0.65
+                        font_size: self.parent.width/19
+                    Label:
+                        text: root.barcode_label_9
+                        color: 0, 0, 0, 0.6
+                        font_size: self.parent.width/19
+                    Label:
+                        text: root.barcode_label_10
+                        color: 0, 0, 0, 0.55
+                        font_size: self.parent.width/19
+                    Label:
+                        size_hint: 1, .3
+                    Label:
+                        text: '[b]{}[b]'.format(root.order_status_label)
+                        markup: 'True'
+                        color: 1,0,0, .5
+                        font_size: self.parent.width/12
+                    Label:
+                        size_hint: 1, .3
+                    Label:
+                        size_hint: 1, 0.5
                 Label:
-                    size_hint: 1, .05
+                    size_hint: 0.01 , 1
                 BoxLayout:
-                    orientation: 'horizontal'
+                    orientation: 'vertical'
+                    Label:
+                        size_hint: 1, 0.7
+                    Label:
+                        text: '[b]{}[/b]'.format(root.last_barcode_label)
+                        markup: 'True'
+                        color: 1,0,0, .5
+                        font_size: self.parent.width/10
+                        size_hint: 1 , .6
+                    Label:
+                        text: '[b]{}[/b]'.format(root.last_time_label)
+                        markup: 'True'
+                        color: 1,0,0,.6
+                        font_size: self.parent.width/10
+                        size_hint: 1, 0.5
+                        size_hint: 1 , .6
+                    Label:
+                        text: '[b]{}[/b]'.format(root.status_label)
+                        markup: 'True'
+                        color: 0,0,0,.7
+                        font_size: self.parent.width/12
+                        halign: 'center'
+                        valign: 'middle'
+                        size_hint: 1 , .6
+                    Label:
+                        text: root.worker_label
+                        font_size: self.parent.width/13
+                        color: 0, .6156, .48235, 1
+                        halign: 'center'
+                        valign: 'middle'
+                        size_hint: 1 , .6
+                    Label:
+                        size_hint: 1, .2
+                    BoxLayout:
+                        BoxLayout:
+                            orientation: 'vertical'
+                            size_hint: 1.2 ,1.1
+                            Label:
+                                size_hint: 1, 0.4
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                Label:
+                                    size_hint: .05 , 1
+                                Button:
+                                    size_hint: 1.01, 1
+                                    text: 'DELETE BOARD'
+                                    font_size: self.parent.width/26
+                                    text_size: self.parent.width/5, None
+                                    halign: 'center'
+                                    valign: 'middle'
+                                    background_color: 0, .6156, .48235, 1
+                                    background_normal: ''
+                                    on_press:
+                                Label:
+                                    size_hint: .1, 1
+                                Button:
+                                    size_hint: 1, 1
+                                    text: 'LOAD ORDER'
+                                    font_size: self.parent.width/26
+                                    text_size: self.parent.width/5, None
+                                    halign: 'center'
+                                    valign: 'middle'
+                                    background_color: 0, .6156, .48235, 1
+                                    background_normal: ''
+                                    on_press:
+                                Label:
+                                    size_hint: .1, 1
+                                BoxLayout:
+                                    orientation: 'vertical'
+                                    Label:
+                                        size_hint: 1, .5
+                                    TextInput:
+                                        id: order_number
+                                    Label:
+                                        size_hint: 1, .5
+                                Label:
+                                    size_hint: .05 , 1
                     BoxLayout:
                         orientation: 'vertical'
-                        size_hint: 2.5, 1
-
-                    Label:
-                        size_hint: .25, 1
-                    BoxLayout:
-                        orientation: 'vertical'
-                        size_hint: .7, 1
-                        Button:
-                            text: 'SEND'
-                            background_color: 0, .6156, .48235, 1
-                            background_normal: ''
-                            on_press: root.add()
-                            on_release:
                         Label:
-                            size_hint: 1,.1
-                        Button:
-                            text: 'CANCEL'
-                            background_color: 0, .6156, .48235, 1
-                            background_normal: ''
-                            on_press: root.remove()
+                            size_hint: 1, .15
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            Label:
+                                size_hint: .05 , 1
+                            Button:
+                                text: 'SHOW ORDER'
+                                font_size: self.parent.width/26
+                                text_size: self.parent.width/4  , None
+                                halign: 'center'
+                                valign: 'middle'
+                                background_color: 0, .6156, .48235
+                                background_color: 0, .6156, .48235, 1
+                                background_normal: ''
+                                on_press: root.show_info()
+                            Label:
+                                size_hint: .1 , 1
+                            Button:
+                                text: 'SEND  ORDER'
+                                font_size: self.parent.width/26
+                                text_size: self.parent.width/5, None
+                                halign: 'center'
+                                valign: 'middle'
+                                background_color: 0, .6156, .48235, 1
+                                background_normal: ''
+                                on_press:
+                            Label:
+                                size_hint: .1 , 1
+                            Button:
+                                text: 'EXIT'
+                                font_size: self.parent.width/26
+                                text_size: self.parent.width/5, None
+                                halign: 'center'
+                                valign: 'middle'
+                                background_color: 0, .6156, .48235, 1
+                                background_normal: ''
+                                on_press: root.exit_app()
+                            Label:
+                                size_hint: .05 , 1
                         Label:
-                            size_hint: 1,.1
-                        Button:
-                            id: button_read
-                            text: 'READ'
-                            background_color: 0, .6156, .48235, 1
-                            background_normal: ''
-                            on_press:
-                        Label:
-                            size_hint: 1,.1
-                        Button:
-                            text: 'EXIT'
-                            background_color: 0, .6156, .48235, 1
-                            background_normal: ''
-                            on_press:
-                    Label:
-                        size_hint: .175, 1
+                            size_hint: 1, .15
                 Label:
-                    size_hint: 1,.05
+                    size_hint: .03, 1
+
+<MessageWindow>:
+    message_box: box_message
+    size_hint: 0.7, 0.7
+    title_align: 'center'
+    title: 'ORDER QUANTITY'
+    BoxLayout:
+        id: box_message
+
