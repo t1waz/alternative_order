@@ -44,7 +44,6 @@ class MainWindow(Screen):
     last_time_label = StringProperty('-')
     status_label = StringProperty('connected')
     worker_label = StringProperty('-')
-    comment_box = StringProperty()
     order_detail_label = StringProperty('NO ORDER')
     order_number_texbox = ObjectProperty()
     order_id = NumericProperty()

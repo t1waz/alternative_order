@@ -15,6 +15,7 @@ class AppService:
         self.current_order_boards = {}
         self.readed_order = {}
         self.current_order = 0
+        self.current_boards = []
 
     def get_endpoint_data(self, _endpoint_string):
         try:
@@ -107,22 +108,26 @@ class AppService:
         self.update_label('last_time_label', datetime.now().strftime('%H:%M:%S'))
 
     def add_barcode(self, _barcode):
-        data_to_send = {
-            "barcode": _barcode,
-            "worker": self.current_worker,
-            "station": self.station_name,
-        }
+        if self.current_order == 0:
+            self.update_label('status_label', 'READ ORDER')
+            return False
+        
+        message = self.get_endpoint_data(_endpoint_string='boards/{}'.format(_barcode))
+        if not bool(message):
+            self.update_label('status_label', 'INVALID BARCODE')
+            return False
 
-        comment = self.get_label_value('comment_box')
-        if comment:
-            data_to_send['comment'] = comment
-            self.update_label('comment_box', '')
+        model_count = self.current_order_boards.get(message['model'], False)
+        if not model_count:
+            self.update_label('status_label', 'NOT IN ORDER')
+            return False
 
-        is_sended, message = self.send_endpoint_data(_endpoint='add_scan',
-                                                     _data_dict=data_to_send)
-
-        self.update_label('status_label', message)
-        self.update_label('comment_box', '')
+        if model_count > 0:
+            self.current_boards.append(_barcode)
+            self.current_order_boards[message['model']] = model_count - 1
+            self.update_label('status_label', 'ADDED')
+        else:
+            self.update_label('status_label', 'MODEL FULL')
 
     def check_new_order_available(self):
         order_number = self.get_label_value('order_id')
