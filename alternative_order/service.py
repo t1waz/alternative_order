@@ -91,6 +91,10 @@ class AppService:
             self.my_app.status_label = 'ORDER LOADED'
             self.my_app.order_detail_label = order['client']
             self.create_message_list()
+        else:
+            self.my_app.status_label = 'NO ORDER'
+            self.my_app.order_detail_label = ''
+            self.my_app.order_number_texbox.text = 'chuj'
 
     def create_message_list(self):
         self.my_app.message_labels = []

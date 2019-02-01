@@ -65,10 +65,7 @@ class MainWindow(Screen):
         message_window.open()
 
     def load_order(self, *args):
-        try:
-            self.order_id = int(self.order_number_texbox.text)
-        except ValueError:
-            self.order_id = 0
+        self.order_id = int(self.order_number_texbox.text or 0 )
 
     def update_padding(self, text_input, *args):
         text_width = text_input._get_text_width(
