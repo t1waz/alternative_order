@@ -36,7 +36,7 @@ class BarcodeScanner:
     def serial_read(self):
         try:
             return self.MasterModule.read(self.MasterModule.inWaiting()).decode(
-                encoding='UTF-8', errors='ignore')
+                encoding='UTF-8', errors='ignore') or 0
         except:
             return '0'
 

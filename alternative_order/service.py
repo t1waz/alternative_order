@@ -24,6 +24,7 @@ class AppService:
         self.workers = {worker['barcode']: worker['username'] for worker in workers_raw_data}
 
     def update_worker(self, _barcode):
+        # tu zrobic handling jesli wbija sie ktos inny a ja jestem juz wbity
         if _barcode in self.workers:
             if self.current_worker is '':
                 self.current_worker = self.workers[_barcode]
@@ -54,10 +55,6 @@ class AppService:
         self.my_app.last_time_label = datetime.now().strftime('%H:%M:%S')
 
     def add_barcode(self, _barcode):
-        if self.current_order == 0:
-            self.my_app.status_label = 'READ ORDER'
-            return False
-
         message = self.api.get_endpoint_data(_endpoint_string='boards/{}'.format(_barcode))
         if not bool(message):
             self.my_app.status_label = 'INVALID BARCODE'
@@ -113,9 +110,12 @@ class AppService:
     def main_handling(self, _barcode):
         if _barcode != 0:
             if not self.update_worker(_barcode):
-                if not self.current_worker == "":
-                    self.add_barcode(_barcode)
-                    self.create_message_list()
+                if self.current_order == 0:
+                    self.my_app.status_label = 'READ ORDER'
                 else:
-                    self.my_app.status_label = 'SCAN WORKER CARD'
+                    if not self.current_worker == "":
+                        self.add_barcode(_barcode)
+                        self.create_message_list()
+                    else:
+                        self.my_app.status_label = 'SCAN WORKER CARD'
             self.update_barcode_list(_barcode)
