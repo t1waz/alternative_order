@@ -25,7 +25,7 @@ class ScannerThread(threading.Thread):
 
     def run(self):
         while True:
-            current_barcode_scan = self.barcode_scanner.ask_data()
+            current_barcode_scan = self.barcode_scanner.handle_scanner()
             self.app_service.main_handling(current_barcode_scan)
             self.app_service.check_new_order_available()
 
@@ -41,11 +41,12 @@ class MainWindow(Screen):
     last_barcode_label = StringProperty('')
     last_time_label = StringProperty('-')
     status_label = StringProperty('connected')
-    worker_label = StringProperty('-')
+    worker_label = StringProperty('no worker')
     order_detail_label = StringProperty('NO ORDER')
-    order_number_texbox = ObjectProperty()
+    order_texbox = ObjectProperty()
     order_id = NumericProperty()
     message_labels = ListProperty()
+    load_order_button = StringProperty('LOAD ORDER')
     for index in range(1, 11):
         variable_name = 'barcode_label_{}'.format(index)
         exec(variable_name + '  = StringProperty()')
@@ -65,7 +66,16 @@ class MainWindow(Screen):
         message_window.open()
 
     def load_order(self, *args):
-        self.order_id = int(self.order_number_texbox.text or 0 )
+        if self.load_order_button == 'LOAD ORDER':
+            self.order_id = int(self.order_texbox.text) \
+                if self.order_texbox.text.isdigit() else 0
+            if self.order_id > 0:
+                self.load_order_button = 'DELETE ORDER'
+            else:
+                self.order_texbox.text = ''
+        else:
+            self.load_order_button = 'LOAD ORDER'
+            self.order_id = 0
 
     def update_padding(self, text_input, *args):
         text_width = text_input._get_text_width(

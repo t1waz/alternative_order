@@ -1,0 +1,4 @@
+[flake8]
+# W191 - I want my project to look nice in my personal visual taste
+ignore = W191, E722
+max-line-length = 99

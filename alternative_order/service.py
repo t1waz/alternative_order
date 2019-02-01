@@ -1,7 +1,7 @@
-from kivy.app import App
 from datetime import datetime
 from api_service import ApiService
 import settings
+
 
 class AppService:
     def __init__(self, my_app):
@@ -21,8 +21,7 @@ class AppService:
         self.my_app.main_app_name_label = '{} ROOM'.format(settings.STATION_NAME)
         self.my_app.status_label = 'connected'
 
-        self.workers = {worker['barcode']: worker['username'] for 
-                        worker in workers_raw_data}
+        self.workers = {worker['barcode']: worker['username'] for worker in workers_raw_data}
 
     def update_worker(self, _barcode):
         if _barcode in self.workers:
@@ -58,7 +57,7 @@ class AppService:
         if self.current_order == 0:
             self.my_app.status_label = 'READ ORDER'
             return False
-        
+
         message = self.api.get_endpoint_data(_endpoint_string='boards/{}'.format(_barcode))
         if not bool(message):
             self.my_app.status_label = 'INVALID BARCODE'
@@ -77,10 +76,9 @@ class AppService:
             self.my_app.status_label = 'MODEL FULL'
 
     def check_new_order_available(self):
-        order_number = self.my_app.order_id
-        if order_number != self.current_order:
-            self.current_order = order_number
-            self.load_order(order_number)
+        if self.my_app.order_id != self.current_order:
+            self.current_order = self.my_app.order_id
+            self.load_order(self.my_app.order_id)
 
     def load_order(self, _id):
         order = self.api.get_endpoint_data("orders/{}".format(_id))
@@ -92,19 +90,24 @@ class AppService:
             self.my_app.order_detail_label = order['client']
             self.create_message_list()
         else:
+            self.current_order_boards = {}
+            self.readed_order = {}
             self.my_app.status_label = 'NO ORDER'
             self.my_app.order_detail_label = ''
-            self.my_app.order_number_texbox.text = 'chuj'
+            self.my_app.order_texbox.text = ''
+            self.my_app.load_order_button = 'LOAD ORDER'
+            self.create_message_list()
 
     def create_message_list(self):
         self.my_app.message_labels = []
         index = 0
         for board, qty in self.readed_order.items():
-            free_space = ' '*(20 - len(board))
-            label_value = '{}:{}{}       {}    <--- LEFT'.format(board,free_space, 
-                                                            qty,
-                                                            self.current_order_boards[board])
-            self.my_app.message_labels.append(label_value)
+            self.my_app.message_labels.append(
+                '{}:{}{}{}{}'.format(board,
+                                     ' ' * (20 - len(board)),
+                                     qty,
+                                     '        ',
+                                     self.current_order_boards[board]))
             index = index + 1
 
     def main_handling(self, _barcode):

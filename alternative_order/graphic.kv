@@ -1,5 +1,5 @@
 <MainWindow>:
-    order_number_texbox: order_number
+    order_texbox: order_number
     BoxLayout:
         canvas.before:
             Color:
@@ -158,7 +158,7 @@
                                     size_hint: .1, 1
                                 Button:
                                     size_hint: 1, 1
-                                    text: 'LOAD ORDER'
+                                    text: root.load_order_button
                                     font_size: self.parent.width/26
                                     text_size: self.parent.width/5, None
                                     halign: 'center'
