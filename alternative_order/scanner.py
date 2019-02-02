@@ -36,7 +36,7 @@ class BarcodeScanner:
     def serial_read(self):
         try:
             return self.MasterModule.read(self.MasterModule.inWaiting()).decode(
-                encoding='UTF-8', errors='ignore') or 0
+                encoding='UTF-8', errors='ignore').rstrip()
         except:
             return '0'
 
@@ -53,7 +53,7 @@ class BarcodeScanner:
             readed_confirmation = self.serial_read()
             if (readed_confirmation[0:4] == 'AC2E'):
                 try:
-                    return int(readed_data[3:17])
+                    return int(readed_data[3:16])
                 except ValueError:
                     return 0
             else:
@@ -63,7 +63,7 @@ class BarcodeScanner:
 
     def handle_scanner(self):
         if self.port:
-            self.ask_data()
+            return self.ask_data()
         else:
             time.sleep(0.15)
             return 0

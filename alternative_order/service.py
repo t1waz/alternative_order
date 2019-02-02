@@ -55,22 +55,16 @@ class AppService:
         self.my_app.last_time_label = datetime.now().strftime('%H:%M:%S')
 
     def add_barcode(self, _barcode):
-        message = self.api.get_endpoint_data(_endpoint_string='boards/{}'.format(_barcode))
-        if not bool(message):
-            self.my_app.status_label = 'INVALID BARCODE'
-            return False
-
-        model_count = self.current_order_boards.get(message['model'], False)
-        if not model_count:
-            self.my_app.status_label = 'NOT IN ORDER'
-            return False
-
-        if model_count > 0:
+        my_scan = {"board": _barcode,
+                   "order": self.current_order}
+        status, message = self.api.send_endpoint_data('add_sended_board',my_scan)
+        if status:
+            current_board = self.api.get_endpoint_data(_endpoint_string='boards/{}'.format(_barcode))
+            self.current_order_boards[current_board['model']] -= 1
             self.current_boards.append(_barcode)
-            self.current_order_boards[message['model']] = model_count - 1
             self.my_app.status_label = 'ADDED'
         else:
-            self.my_app.status_label = 'MODEL FULL'
+            self.my_app.status_label = message['detail']
 
     def check_new_order_available(self):
         if self.my_app.order_id != self.current_order:
