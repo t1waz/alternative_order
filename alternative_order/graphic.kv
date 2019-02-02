@@ -146,14 +146,14 @@
                                     size_hint: .05 , 1
                                 Button:
                                     size_hint: 1.01, 1
-                                    text: 'DELETE BOARD'
+                                    text: root.delete_board_button
                                     font_size: self.parent.width/26
                                     text_size: self.parent.width/5, None
                                     halign: 'center'
                                     valign: 'middle'
                                     background_color: 0, .6156, .48235, 1
                                     background_normal: ''
-                                    on_press:
+                                    on_press: root.delete_board()
                                 Label:
                                     size_hint: .1, 1
                                 Button:

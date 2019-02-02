@@ -10,7 +10,8 @@ from kivy.properties import (
     StringProperty,
     ObjectProperty,
     NumericProperty,
-    ListProperty
+    ListProperty,
+    BooleanProperty
 )
 
 
@@ -26,7 +27,8 @@ class ScannerThread(threading.Thread):
     def run(self):
         while True:
             current_barcode_scan = self.barcode_scanner.handle_scanner()
-            self.app_service.main_handling(current_barcode_scan)
+            if current_barcode_scan != 0:
+                self.app_service.main_handling(current_barcode_scan)
             self.app_service.check_new_order_available()
 
 
@@ -47,6 +49,7 @@ class MainWindow(Screen):
     order_id = NumericProperty()
     message_labels = ListProperty()
     load_order_button = StringProperty('LOAD ORDER')
+    delete_board_button = StringProperty('DELETE BOARD')
     for index in range(1, 11):
         variable_name = 'barcode_label_{}'.format(index)
         exec(variable_name + '  = StringProperty()')
@@ -71,11 +74,20 @@ class MainWindow(Screen):
                 if self.order_texbox.text.isdigit() else 0
             if self.order_id > 0:
                 self.load_order_button = 'DELETE ORDER'
+                self.delete_board_button = 'DELETE BOARD'
             else:
                 self.order_texbox.text = ''
         else:
             self.load_order_button = 'LOAD ORDER'
             self.order_id = 0
+
+    def delete_board(self, *args):
+        if self.worker_label not in('no worker', ''):
+            if self.delete_board_button == 'DELETE BOARD':
+                self.delete_board_button = 'CANCEL DELETE'
+            else:
+                self.delete_board_button = 'DELETE BOARD'
+
 
     def update_padding(self, text_input, *args):
         text_width = text_input._get_text_width(
