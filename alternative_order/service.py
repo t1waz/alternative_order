@@ -1,6 +1,7 @@
 from datetime import datetime
 from api_service import ApiService
 import settings
+import copy
 
 
 class AppService:
@@ -9,7 +10,6 @@ class AppService:
         self.my_app = my_app
         self.current_worker = ''
         self.workers = {}
-        self.current_order_boards = {}
         self.readed_order = {}
         self.current_order = 0
         self.current_boards = []
@@ -40,7 +40,7 @@ class AppService:
             up_label = getattr(self.my_app, 'barcode_label_{}'.format(index - 1))
             setattr(self.my_app, 'barcode_label_{}'.format(index), up_label)
 
-        if not current_last_barcode_label:
+        if current_last_barcode_label != '':
             first_history_label = '{} {}'.format(datetime.now().strftime('%H:%M:%S'),
                                                  current_last_barcode_label)
         else:
@@ -56,37 +56,64 @@ class AppService:
         self.my_app.status_label = 'ADDED' if status else message['detail']
         if status:
             current_board = self.api.get_endpoint_data(_endpoint_string='boards/{}'.format(_barcode))
-            self.current_order_boards[current_board['model']] -= 1
             self.current_boards.append(_barcode)
 
     def handle_delete(_barcode):
-        if self.delete_barcode(_barcode):
-            self.status_label = 'DELETED'
-        else:
-            self.status_label = 'CANNOT DELETE'
+        self.status_label = 'DELETED' if self.delete_barcode(_barcode) else 'CANNOT DELETE'
         self.my_app.delete_board_button = 'DELETE BOARD'
+
+    def check_new_order_available(self):
+        if self.my_app.order_id != self.current_order:
+            if self.my_app.order_id is not 0:
+                self.load_order(self.my_app.order_id)
+            else:
+                self.clear_order()
+            self.current_order = self.my_app.order_id
+
+    def check_if_send_order(self):
+        if self.my_app.status_label == 'SENDING':
+            # if all(value == 0 for value in .values()):
+            #     a, b = self.api.update_endpoint_data('orders/{}/'.format(self.order_id),
+            #                                   {"completed": true})
+            #     print(a,b)
+            #     self.my_app.status_label = 'SENDED'
+            pass
+
+
+    def clear_order(self):
+        self.my_app.order_detail_label = ''
+        self.my_app.order_texbox.text = ''
+        # tutaj wstawic zeby bralo z zamowienia a nie z cache appki
+        removed_all = True
+        for board in self.current_boards:
+            if not self.delete_barcode(board):
+                removed_all = False
+        #
+        self.current_boards = []
+        self.my_app.delete_board_button = 'DELETE BOARD'
+        self.my_app.status_label = 'REMOVED' if removed_all else 'REMOVE ERROR'
+        self.readed_order = {}
+
 
     def delete_barcode(self, _barcode):
         status, message = self.api.delete_endpoint_data('add_sended_board',
                                                         {"board": _barcode})
 
         if message == 'barcode removed from order' and status:
+            current_board = self.api.get_endpoint_data('boards/{}'.format(_barcode))
+            self.current_boards.remove(_barcode)
             return True
         else:
             return False
 
-    def check_new_order_available(self):
-        if self.my_app.order_id != self.current_order:
-            self.current_order = self.my_app.order_id
-            self.load_order(self.my_app.order_id)
-
     def load_order(self, _id):
         order = self.api.get_endpoint_data("orders/{}".format(_id))
         boards = order.get('boards', False)
+        self.current_boards = order.get('sended', False)
         self.my_app.status_label = 'ORDER LOADED' if boards else 'NO ORDER'
         self.my_app.order_detail_label = order['client'] if boards else ''
-        self.current_order_boards = boards if boards else {}
         self.readed_order = boards if boards else {}
+        self.current_boards = [] # tu zmienic zeby bralo z sended_board
         if not boards:
             self.my_app.order_texbox.text = ''
             self.my_app.load_order_button = 'LOAD ORDER'
@@ -95,13 +122,17 @@ class AppService:
     def create_message_list(self):
         self.my_app.message_labels = []
         index = 0
+        already_sended_boards = copy.deepcopy(self.readed_order)
+        for board in self.current_boards:
+            already_sended_boards[self.api.get_endpoint_data('boards/{}'.format(board))['model']] -= 1
+        print(already_sended_boards)
         for board, qty in self.readed_order.items():
             self.my_app.message_labels.append(
                 '{}:{}{}{}{}'.format(board,
                                      ' ' * (20 - len(board)),
                                      qty,
                                      '        ',
-                                     self.current_order_boards[board]))
+                                     already_sended_boards[board]))
             index = index + 1
 
     def main_handling(self, _barcode):

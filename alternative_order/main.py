@@ -30,6 +30,7 @@ class ScannerThread(threading.Thread):
             if current_barcode_scan != 0:
                 self.app_service.main_handling(current_barcode_scan)
             self.app_service.check_new_order_available()
+            self.app_service.check_if_send_order()
 
 
 class MessageWindow(Popup):
@@ -50,6 +51,7 @@ class MainWindow(Screen):
     message_labels = ListProperty()
     load_order_button = StringProperty('LOAD ORDER')
     delete_board_button = StringProperty('DELETE BOARD')
+
     for index in range(1, 11):
         variable_name = 'barcode_label_{}'.format(index)
         exec(variable_name + '  = StringProperty()')
@@ -88,6 +90,9 @@ class MainWindow(Screen):
             else:
                 self.delete_board_button = 'DELETE BOARD'
 
+    def send_order(self, *args):
+        if self.order_id > 0:
+            self.status_label = 'SENDING'
 
     def update_padding(self, text_input, *args):
         text_width = text_input._get_text_width(

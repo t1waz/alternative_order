@@ -29,6 +29,16 @@ class ApiService:
 
     def delete_endpoint_data(self, _endpoint, _data_dict):
         response = requests.delete(url='http://{}/{}/'.format(settings.BACKEND_URL, _endpoint),
+                                   data=json.dumps(_data_dict),
+                                   headers={'Access-Token': settings.BACKEND_ACCESS_TOKEN,
+                                            'Content-Type': 'application/json'})
+        if response.status_code == 200:
+            return True, response.json()
+        else:
+            return False, response.json()
+
+    def update_endpoint_data(self, _endpoint, _data_dict):
+        response = requests.path(url='http://{}/{}/'.format(settings.BACKEND_URL, _endpoint),
                                  data=json.dumps(_data_dict),
                                  headers={'Access-Token': settings.BACKEND_ACCESS_TOKEN,
                                           'Content-Type': 'application/json'})
