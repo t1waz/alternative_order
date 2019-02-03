@@ -13,6 +13,7 @@ from kivy.properties import (
     ListProperty,
     BooleanProperty
 )
+import time
 
 
 Builder.load_file('graphic.kv')
@@ -51,7 +52,7 @@ class MainWindow(Screen):
     message_labels = ListProperty()
     load_order_button = StringProperty('LOAD ORDER')
     delete_board_button = StringProperty('DELETE BOARD')
-
+    show_info_button = StringProperty('SHOW INFO')
     for index in range(1, 11):
         variable_name = 'barcode_label_{}'.format(index)
         exec(variable_name + '  = StringProperty()')
@@ -86,6 +87,7 @@ class MainWindow(Screen):
     def delete_board(self, *args):
         if self.worker_label not in('no worker', ''):
             if self.delete_board_button == 'DELETE BOARD':
+                self.status_label = 'DELETE MODE'
                 self.delete_board_button = 'CANCEL DELETE'
             else:
                 self.delete_board_button = 'DELETE BOARD'

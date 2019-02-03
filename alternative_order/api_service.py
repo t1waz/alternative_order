@@ -5,9 +5,9 @@ import settings
 
 
 class ApiService:
-    def get_endpoint_data(self, _endpoint_string):
+    def get_endpoint_data(self, endpoint):
         try:
-            url = 'http://{}/{}/'.format(settings.BACKEND_URL, _endpoint_string)
+            url = 'http://{}/{}/'.format(settings.BACKEND_URL, endpoint)
             response = requests.get(url=url,
                                     headers={'Access-Token': settings.BACKEND_ACCESS_TOKEN,
                                              'Content-Type': 'application/json'})
@@ -17,9 +17,9 @@ class ApiService:
 
         return response.json()
 
-    def send_endpoint_data(self, _endpoint, _data_dict):
-        response = requests.post(url='http://{}/{}/'.format(settings.BACKEND_URL, _endpoint),
-                                 data=json.dumps(_data_dict),
+    def send_endpoint_data(self, endpoint, data):
+        response = requests.post(url='http://{}/{}/'.format(settings.BACKEND_URL, endpoint),
+                                 data=json.dumps(data),
                                  headers={'Access-Token': settings.BACKEND_ACCESS_TOKEN,
                                           'Content-Type': 'application/json'})
         if response.status_code == 200:
@@ -27,9 +27,9 @@ class ApiService:
         else:
             return False, response.json()
 
-    def delete_endpoint_data(self, _endpoint, _data_dict):
-        response = requests.delete(url='http://{}/{}/'.format(settings.BACKEND_URL, _endpoint),
-                                   data=json.dumps(_data_dict),
+    def delete_endpoint_data(self, endpoint, data):
+        response = requests.delete(url='http://{}/{}/'.format(settings.BACKEND_URL, endpoint),
+                                   data=json.dumps(data),
                                    headers={'Access-Token': settings.BACKEND_ACCESS_TOKEN,
                                             'Content-Type': 'application/json'})
         if response.status_code == 200:
@@ -37,9 +37,9 @@ class ApiService:
         else:
             return False, response.json()
 
-    def update_endpoint_data(self, _endpoint, _data_dict):
-        response = requests.path(url='http://{}/{}/'.format(settings.BACKEND_URL, _endpoint),
-                                 data=json.dumps(_data_dict),
+    def update_endpoint_data(self, endpoint, data):
+        response = requests.patch(url='http://{}/{}/'.format(settings.BACKEND_URL, endpoint),
+                                 data=json.dumps(data),
                                  headers={'Access-Token': settings.BACKEND_ACCESS_TOKEN,
                                           'Content-Type': 'application/json'})
         if response.status_code == 200:
