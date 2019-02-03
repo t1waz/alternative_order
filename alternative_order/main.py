@@ -11,9 +11,7 @@ from kivy.properties import (
     ObjectProperty,
     NumericProperty,
     ListProperty,
-    BooleanProperty
 )
-import time
 
 
 Builder.load_file('graphic.kv')
@@ -36,6 +34,7 @@ class ScannerThread(threading.Thread):
 
 class MessageWindow(Popup):
     message_box = ObjectProperty()
+
     def __init__(self, **kwargs):
         super(MessageWindow, self).__init__(**kwargs)
 
@@ -53,6 +52,7 @@ class MainWindow(Screen):
     load_order_button = StringProperty('LOAD ORDER')
     delete_board_button = StringProperty('DELETE BOARD')
     show_info_button = StringProperty('SHOW INFO')
+
     for index in range(1, 11):
         variable_name = 'barcode_label_{}'.format(index)
         exec(variable_name + '  = StringProperty()')
@@ -66,6 +66,7 @@ class MainWindow(Screen):
     def show_info(self, *args):
         message_window = MessageWindow()
         message_window.message_box.add_widget(Label())
+
         for each in self.message_labels:
             message_window.message_box.add_widget(Label(text=each))
         message_window.message_box.add_widget(Label())
@@ -73,8 +74,7 @@ class MainWindow(Screen):
 
     def load_order(self, *args):
         if self.load_order_button == 'LOAD ORDER':
-            self.order_id = int(self.order_texbox.text) \
-                if self.order_texbox.text.isdigit() else 0
+            self.order_id = int(self.order_texbox.text) if self.order_texbox.text.isdigit() else 0
             if self.order_id > 0:
                 self.load_order_button = 'DELETE ORDER'
                 self.delete_board_button = 'DELETE BOARD'
@@ -91,6 +91,7 @@ class MainWindow(Screen):
                 self.delete_board_button = 'CANCEL DELETE'
             else:
                 self.delete_board_button = 'DELETE BOARD'
+                self.status_label = 'CANCEL DELETE'
 
     def send_order(self, *args):
         if self.order_id > 0:
@@ -118,4 +119,3 @@ class ScanApp(App):
 
 if __name__ == '__main__':
     ScanApp().run()
-
