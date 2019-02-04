@@ -78,22 +78,6 @@ class AppService:
 
         self.my_app.delete_board_button = 'DELETE BOARD'
 
-    def check_if_send_order(self):
-        if self.my_app.status_label == 'SENDING':
-            already_sended_boards = self.return_current_models()
-            if all(value == 0 for value in already_sended_boards.values()):
-                status, message = self.api.update_endpoint_data(
-                    endpoint='orders/{}'.format(self.current_order),
-                    data={"completed": "true"})
-                self.my_app.status_label = 'SENDED' if status == 200 else 'ERROR'
-            else:
-                self.my_app.status_label = 'NOT FULL'
-            self.current_boards = []
-            self.current_order = 0
-            self.my_app.order_id = 0
-            self.my_app.order_texbox.text = ''
-            self.my_app.load_order_button = 'LOAD ORDER'
-
     def clear_order(self):
         self.my_app.order_detail_label = ''
         self.my_app.order_texbox.text = ''
@@ -144,6 +128,7 @@ class AppService:
         for board in self.current_boards:
             board_model = self.api.get_endpoint_data(endpoint='boards/{}'.format(board))['model']
             already_sended_boards[board_model] -= 1
+
         return already_sended_boards
 
     def check_if_send_order(self):
@@ -163,6 +148,7 @@ class AppService:
             self.my_app.order_texbox.text = ''
             self.my_app.load_order_button = 'LOAD ORDER'
             self.my_app.order_detail_label = ''
+            self.my_app.message_labels = []
 
     def create_message_list(self):
         self.my_app.message_labels = []
