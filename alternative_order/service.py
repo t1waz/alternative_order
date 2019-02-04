@@ -62,12 +62,6 @@ class AppService:
         else:
             self.my_app.status_label = message.get('detail', "")
 
-        if status == 200:
-            self.current_boards.append(_barcode)
-            self.my_app.status_label = 'ADDED'
-        else:
-            self.my_app.status_label = message.get('detail', "")
-
     def check_new_order_available(self):
         if self.my_app.order_id != self.current_order:
             if self.my_app.order_id is not 0:
@@ -120,7 +114,8 @@ class AppService:
 
     def delete_barcode(self, _barcode):
         status, message = self.api.delete_endpoint_data(endpoint='add_sended_board',
-                                                        data={"board": _barcode})
+                                                        data={"board": _barcode,
+                                                              "order": self.current_order})
 
         if message == 'barcode removed from order' and status == 200:
             self.current_boards.remove(_barcode)
