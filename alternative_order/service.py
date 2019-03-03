@@ -102,7 +102,7 @@ class AppService:
                                                               "order": self.current_order})
 
         if message == 'barcode removed from order' and status == 200:
-            self.current_boards.remove(_barcode)
+            if _barcode in self.current_boards: self.current_boards.remove(_barcode)
             return True
         else:
             return False
@@ -113,6 +113,7 @@ class AppService:
             self.my_app.status_label = 'ALREADY SENDED'
             self.my_app.load_order_button = 'LOAD ORDER'
             self.my_app.order_texbox.text = ''
+            self.current_order = 0
             return False
 
         boards = order.get('boards', False)
