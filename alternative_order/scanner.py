@@ -8,10 +8,16 @@ class BarcodeScanner:
         self.port = False
         for port in _ports:
             try:
-                self.MasterModule = serial.Serial(port, 115200)
+                self.MasterModule = serial.Serial(port,
+                                                  115200,
+                                                  dsrdtr=True,
+                                                  rtscts=True)
                 if self.MasterModule.isOpen():
                     self.MasterModule.close()
-                self.MasterModule = serial.Serial(port, 115200)
+                self.MasterModule = serial.Serial(port,
+                                                  115200,
+                                                  dsrdtr=True,
+                                                  rtscts=True)
                 self.port = True
             except serial.SerialException:
                 pass

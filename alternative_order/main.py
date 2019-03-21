@@ -1,3 +1,5 @@
+import os
+os.environ['KIVY_GL_BACKEND'] = 'gl' # DUE TO RUNNING ON RASPI
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup

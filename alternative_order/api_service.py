@@ -10,7 +10,7 @@ class ApiService:
             response = requests.get(url=url,
                                     headers={'Access-Token': settings.BACKEND_ACCESS_TOKEN,
                                              'Content-Type': 'application/json'})
-        except requests.ConnectionError:
+        except (requests.ConnectionError,):
             # TU ZROBIC JAKIS HANDLING JESLI NIE DZIALA SERWER ELO
             return {}
 
@@ -26,7 +26,7 @@ class ApiService:
                                      data=json.dumps(data),
                                      headers={'Access-Token': settings.BACKEND_ACCESS_TOKEN,
                                               'Content-Type': 'application/json'})
-        except requests.ConnectionError:
+        except (requests.ConnectionError,):
             return False, {}
 
         try:
@@ -41,7 +41,7 @@ class ApiService:
                                        data=json.dumps(data),
                                        headers={'Access-Token': settings.BACKEND_ACCESS_TOKEN,
                                                 'Content-Type': 'application/json'})
-        except requests.ConnectionError:
+        except (requests.ConnectionError,):
             return False, {}
 
         try:
@@ -56,7 +56,7 @@ class ApiService:
                                       data=json.dumps(data),
                                       headers={'Access-Token': settings.BACKEND_ACCESS_TOKEN,
                                                'Content-Type': 'application/json'})
-        except requests.ConnectionError:
+        except (requests.ConnectionError,):
             return False, {}
 
         try:
