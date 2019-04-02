@@ -4,8 +4,21 @@ import time
 
 class BarcodeScanner:
     def __init__(self):
-        _ports = ['/dev/ttyUSB{}'.format(number) for number in range(0, 20)]
         self.port = False
+        self.init_connection()
+
+    def serial_clear(self):
+        if (self.MasterModule.inWaiting() > 0):
+            try:
+                self.MasterModule.read(self.MasterModule.inWaiting())
+                time.sleep(0.05)
+            except:
+                pass
+            self.MasterModule.flush()
+
+    def init_connection(self):
+        _ports = ['/dev/ttyUSB{}'.format(number) for number in range(0, 20)]
+
         for port in _ports:
             try:
                 self.MasterModule = serial.Serial(port,
@@ -19,6 +32,10 @@ class BarcodeScanner:
                                                   dsrdtr=True,
                                                   rtscts=True)
                 self.port = True
+                self.port = True
+                time.sleep(0.5)
+                self.serial_clear()
+                time.sleep(0.5)
             except serial.SerialException:
                 pass
 
@@ -29,15 +46,6 @@ class BarcodeScanner:
     def serial_write(self, data_to_send):
         self.MasterModule.write(str(data_to_send).encode('utf-8'))
         self.MasterModule.flush()
-
-    def serial_clear(self):
-        if (self.MasterModule.inWaiting() > 0):
-            try:
-                self.MasterModule.read(self.MasterModule.inWaiting())
-                time.sleep(0.05)
-            except:
-                pass
-            self.MasterModule.flush()
 
     def serial_read(self):
         try:
